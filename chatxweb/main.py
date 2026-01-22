@@ -293,5 +293,7 @@ if 'admin' in roles:
             
             st.markdown("#### 用户活跃度统计")
             # 按消息数排序的用户
-            active_users_df = user_access_df.sort_values(by='消息总数', ascending=False)[['用户名', '姓名', '消息总数', '主页访问']]
-            st.bar_chart(active_users_df.set_index('用户名')['消息总数'])
+            #active_users_df = user_access_df.sort_values(by='消息总数', ascending=False)[['用户名', '姓名', '消息总数', '主页访问']]
+            #st.bar_chart(active_users_df.set_index('用户名')['消息总数'])
+            active_users_df = user_access_df[['用户名', '姓名', '消息总数', '主页访问']]
+            st.dataframe(active_users_df, width="stretch")
