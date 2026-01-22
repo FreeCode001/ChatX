@@ -1,0 +1,44 @@
+api_key: null
+cookie:
+  expiry_days: 1
+  key: my_secret_key_123
+  name: chatx_cookie
+credentials:
+  usernames:
+    monkey:
+      email: sundasheng@126.com
+      first_name: "\u5927\u5723 sun"
+      last_name: "\u5927\u5723 sun"
+      logged_in: false
+      password: $2b$12$dBxdRUvsSEdxva8J.LbQS.h4ScQ5ksmNOcTZS1tC5VVtMN804Rhz6
+      password_hint: x
+      roles:
+      - admin
+    yuyang:
+      email: 1429327078@qq.com
+      first_name: yu yang
+      last_name: yu yang
+      logged_in: false
+      password: $2b$12$AD/O62HsqyK8kUTfS0Ld8OhIpcEbw3wdJnP6EubFxpG9MecQzUeg2
+      password_hint: x
+      roles: 
+      - user
+    yuyang1:
+      email: 2429327078@qq.com
+      first_name: yu yang yu yang
+      last_name: yu yang yu yang
+      logged_in: false
+      password: $2b$12$QoLHBm6/uNAPuR2qrE1plOAu0.VAqEfEWspyfGm3//NJQVwnbgdKe
+      password_hint: x
+      roles: 
+      - user
+oauth2:
+  google:
+    client_id: null
+    client_secret: null
+    redirect_uri: null
+  microsoft:
+    client_id: null
+    client_secret: null
+    redirect_uri: null
+    tenant_id: null
