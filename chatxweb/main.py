@@ -99,7 +99,7 @@ if 'admin' in roles:
         from datetime import datetime
         
         # 读取日志文件
-        log_file_path = os.path.join(os.path.dirname(__file__), '..', 'logs', 'chatx.log')
+        log_file_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'logs', 'chatx.log')
         
         # 定义正则表达式模式
         login_pattern = re.compile(r'(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2},\d{3}) -.*? - INFO - 用户：None \|登录成功: 用户 (\w+) \((.*?)\) 已成功登录系统')
