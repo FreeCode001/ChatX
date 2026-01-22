@@ -126,7 +126,7 @@ if 'admin' in roles:
                 # 处理登录记录
                 login_match = login_pattern.search(line)
                 if login_match:
-                    timestamp, username, full_name = login_match.groups()
+                    timestamp, username, username, full_name = login_match.groups()
                     if username not in user_stats:
                         user_stats[username] = {
                             'full_name': full_name,
