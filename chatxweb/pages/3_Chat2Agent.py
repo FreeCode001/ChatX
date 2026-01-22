@@ -2,7 +2,6 @@
 ChatX UI：基于Streamlit框架的Web应用，用于与大模型进行交互。
 """
 # encoding=utf-8
-from nt import write
 import os
 import sys
 import time

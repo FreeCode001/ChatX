@@ -1,5 +1,9 @@
 # auth_utils.py
 # encoding=utf-8
+import os
+import sys
+root_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+sys.path.append(root_dir)
 import streamlit as st
 import streamlit_authenticator as stauth
 import yaml
@@ -13,7 +17,7 @@ logger = logging.getLogger('ChatX-auth')
 # 读取配置文件
 def load_config():
     try:
-        with open('../config.yaml') as file:
+        with open(os.path.join(root_dir, 'config.yaml')) as file:
             config = yaml.load(file, Loader=SafeLoader)
     except Exception as e:
         st.error(e)
