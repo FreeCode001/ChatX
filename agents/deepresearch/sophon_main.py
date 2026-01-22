@@ -1,6 +1,5 @@
 import sys
 import os
-from tkinter import S
 # 添加项目根目录到 Python 路径
 root_dir=os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 deepresearch_dir=os.path.dirname(os.path.abspath(__file__))
