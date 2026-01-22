@@ -102,7 +102,7 @@ if 'admin' in roles:
         log_file_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'logs', 'chatx.log')
         
         # 定义正则表达式模式
-        login_pattern = re.compile(r'(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2},\d{3}) -.*? - INFO - 用户：None \|登录成功: 用户 (\w+) \((.*?)\) 已成功登录系统')
+        login_pattern = re.compile(r'(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2},\d{3}) -.*? - INFO - 用户：(\w+) \|登录成功: 用户 (\w+) \((.*?)\) 已成功登录系统')
         logout_pattern = re.compile(r'(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2},\d{3}) -.*? - INFO - 用户：(\w+) \| 退出登录')
         homepage_pattern = re.compile(r'(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2},\d{3}) -.*? - INFO - 用户：(\w+) \| 访问ChatX主页')
         chat2model_pattern = re.compile(r'(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2},\d{3}) - ChatX-Chat2Model - INFO - 用户：(\w+) \| 访问Chat2Model:.*?')
