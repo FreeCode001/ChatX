@@ -14,6 +14,15 @@ credentials:
       password_hint: x
       roles:
       - admin
+    san:
+      email: 3429327078@qq.com
+      first_name: San Zhang
+      last_name: San Zhang
+      logged_in: false
+      password: $2b$12$ESAJqkGyifqr24yI5/.FbOoqjBCIre6/Up0qZal0GjmMB1t74CJDq
+      password_hint: x
+      roles:
+      - user
     yuyang:
       email: 1429327078@qq.com
       first_name: yu yang
@@ -21,7 +30,7 @@ credentials:
       logged_in: false
       password: $2b$12$AD/O62HsqyK8kUTfS0Ld8OhIpcEbw3wdJnP6EubFxpG9MecQzUeg2
       password_hint: x
-      roles: 
+      roles:
       - user
     yuyang1:
       email: 2429327078@qq.com
@@ -30,7 +39,7 @@ credentials:
       logged_in: false
       password: $2b$12$QoLHBm6/uNAPuR2qrE1plOAu0.VAqEfEWspyfGm3//NJQVwnbgdKe
       password_hint: x
-      roles: 
+      roles:
       - user
 oauth2:
   google:

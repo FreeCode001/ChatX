@@ -62,29 +62,31 @@ def check_authentication():
         # 若未登录，渲染登录表单
         tab1, tab2 = st.tabs(["**登录**", "**注册**"])
         with tab1:
+            tab1_info_holder = st.empty()
             authenticator.login('main',fields={'Form name':'用户登入', 'Username':'用户名', 'Password':'密码', 'Login':'登入', 'Captcha':'验证码'},key='用户登入')
         with tab2:
+            tab2_info_holder = st.empty()
             try:
                 email, username, name = authenticator.register_user('main',fields= {'First name':'名字','Last name':'姓氏','Form name':'用户注册', 'Email':'Email', 'Username':'用户名', 'Password':'密码', 'Repeat password':'重复密码', 'Password hint':'密码提示词', 'Captcha':'验证码', 'Register':'注册'},roles=['user'],key='用户注册')
                 if email:
                     config['credentials']['usernames'][username]['email'] = email
                     config['credentials']['usernames'][username]['first_name'] = name
                     config['credentials']['usernames'][username]['last_name'] = name
-                    with open('../config.yaml', 'w') as file:
+                    with open(os.path.join(root_dir, 'config.yaml'), 'w') as file:
                         yaml.safe_dump(config, file, default_flow_style=False)
-                    tab2.success('User registered successfully')
+                    tab2_info_holder.success('User registered successfully')
                     logger.info(f'用户：{username} | 注册成功: 新用户 {username} ({name}) 已成功注册，邮箱: {email}')
             except Exception as e:
-                tab2.error(e)
-                logger.error(f'用户：{username} |注册失败: 用户尝试注册时发生错误 - {e}')
+                tab2_info_holder.error(e)
+                logger.error(f'用户：None |注册失败: 用户尝试注册时发生错误 - {e}')
         
         # 验证状态判断
         if st.session_state['authentication_status'] == False:
-            tab1.error('用户名或密码错误！',icon='❌')
+            tab1_info_holder.error('用户名或密码错误！',icon='❌')
             logger.warning(f'用户：{username} |登录失败: {st.session_state.get("username", "未知用户")} 尝试登录，但用户名或密码错误')
             st.stop()  # 终止脚本，阻止访问页面
         if st.session_state['authentication_status'] == None:
-            tab1.warning('请先登录以访问页面！')
+            tab1_info_holder.warning('请先登录以访问页面！')
             # 添加标志防止重复记录未登录访问尝试日志
             current_time = time.time()
             if 'last_anonymous_attempt' not in st.session_state or current_time - st.session_state['last_anonymous_attempt'] > 5:  # 5秒内不重复记录
