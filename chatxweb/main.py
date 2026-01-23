@@ -1,7 +1,8 @@
 # main.py
 # encoding=utf-8
-
+import pandas as pd
 import streamlit as st
+import re
 import logging
 import os
 from auth import check_authentication, get_user_roles
@@ -91,13 +92,9 @@ roles = get_user_roles(username)
 if 'admin' in roles:
     st.divider()
     with st.expander("# 管理员查看用户数据"):
-        tab1, tab2 = st.tabs(["**功能使用统计**", "**用户访问表**"])    
+        tab1, tab2 = st.tabs(["**功能统计**", "**用户统计**"])    
         
         # 解析日志文件
-        import pandas as pd
-        import re
-        from datetime import datetime
-        
         # 读取日志文件
         log_file_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'logs', 'chatx.log')
         
@@ -119,6 +116,7 @@ if 'admin' in roles:
             'MultiModelChat': {'visits': 0, 'messages': 0, 'models': {}},
             'Chat2Agent': {'visits': 0, 'messages': 0, 'agents': {}}
         }
+        daily_user_activities = {}  # 用于统计每天每个用户的活跃次数
         
         # 解析日志
         with open(log_file_path, 'r', encoding='utf-8') as f:
@@ -143,6 +141,13 @@ if 'admin' in roles:
                         }
                     user_stats[username]['login_count'] += 1
                     user_stats[username]['last_login'] = timestamp
+                    # 统计活跃次数
+                    date = timestamp.split(' ')[0]
+                    if date not in daily_user_activities:
+                        daily_user_activities[date] = {}
+                    if username not in daily_user_activities[date]:
+                        daily_user_activities[date][username] = 0
+                    daily_user_activities[date][username] += 1
                 
                 # 处理登出记录
                 logout_match = logout_pattern.search(line)
@@ -150,6 +155,13 @@ if 'admin' in roles:
                     timestamp, username = logout_match.groups()
                     if username in user_stats:
                         user_stats[username]['logout_count'] += 1
+                    # 统计活跃次数
+                    date = timestamp.split(' ')[0]
+                    if date not in daily_user_activities:
+                        daily_user_activities[date] = {}
+                    if username not in daily_user_activities[date]:
+                        daily_user_activities[date][username] = 0
+                    daily_user_activities[date][username] += 1
                 
                 # 处理主页访问
                 homepage_match = homepage_pattern.search(line)
@@ -157,6 +169,13 @@ if 'admin' in roles:
                     timestamp, username = homepage_match.groups()
                     if username in user_stats:
                         user_stats[username]['homepage_visits'] += 1
+                    # 统计活跃次数
+                    date = timestamp.split(' ')[0]
+                    if date not in daily_user_activities:
+                        daily_user_activities[date] = {}
+                    if username not in daily_user_activities[date]:
+                        daily_user_activities[date][username] = 0
+                    daily_user_activities[date][username] += 1
                 
                 # 处理Chat2Model访问
                 chat2model_match = chat2model_pattern.search(line)
@@ -165,6 +184,13 @@ if 'admin' in roles:
                     if username in user_stats:
                         user_stats[username]['chat2model_visits'] += 1
                     function_stats['Chat2Model']['visits'] += 1
+                    # 统计活跃次数
+                    date = timestamp.split(' ')[0]
+                    if date not in daily_user_activities:
+                        daily_user_activities[date] = {}
+                    if username not in daily_user_activities[date]:
+                        daily_user_activities[date][username] = 0
+                    daily_user_activities[date][username] += 1
                 
                 # 处理MultiModelChat访问
                 multimodel_match = multimodel_pattern.search(line)
@@ -173,6 +199,13 @@ if 'admin' in roles:
                     if username in user_stats:
                         user_stats[username]['multimodel_visits'] += 1
                     function_stats['MultiModelChat']['visits'] += 1
+                    # 统计活跃次数
+                    date = timestamp.split(' ')[0]
+                    if date not in daily_user_activities:
+                        daily_user_activities[date] = {}
+                    if username not in daily_user_activities[date]:
+                        daily_user_activities[date][username] = 0
+                    daily_user_activities[date][username] += 1
                 
                 # 处理Chat2Agent访问
                 chat2agent_match = chat2agent_pattern.search(line)
@@ -181,6 +214,13 @@ if 'admin' in roles:
                     if username in user_stats:
                         user_stats[username]['chat2agent_visits'] += 1
                     function_stats['Chat2Agent']['visits'] += 1
+                    # 统计活跃次数
+                    date = timestamp.split(' ')[0]
+                    if date not in daily_user_activities:
+                        daily_user_activities[date] = {}
+                    if username not in daily_user_activities[date]:
+                        daily_user_activities[date][username] = 0
+                    daily_user_activities[date][username] += 1
                 
                 # 处理消息记录
                 message_match = message_pattern.search(line)
@@ -195,6 +235,13 @@ if 'admin' in roles:
                             function_stats['MultiModelChat']['messages'] += 1
                         elif 'Chat2Agent' in line:
                             function_stats['Chat2Agent']['messages'] += 1
+                    # 统计活跃次数
+                    date = timestamp.split(' ')[0]
+                    if date not in daily_user_activities:
+                        daily_user_activities[date] = {}
+                    if username not in daily_user_activities[date]:
+                        daily_user_activities[date][username] = 0
+                    daily_user_activities[date][username] += 1
                 
                 # 处理模型使用
                 model_match = model_pattern.search(line)
@@ -207,12 +254,26 @@ if 'admin' in roles:
                         function_stats['Chat2Model']['models'][model_name] = function_stats['Chat2Model']['models'].get(model_name, 0) + 1
                     elif 'MultiModelChat' in line:
                         function_stats['MultiModelChat']['models'][model_name] = function_stats['MultiModelChat']['models'].get(model_name, 0) + 1
+                    # 统计活跃次数
+                    date = timestamp.split(' ')[0]
+                    if date not in daily_user_activities:
+                        daily_user_activities[date] = {}
+                    if username not in daily_user_activities[date]:
+                        daily_user_activities[date][username] = 0
+                    daily_user_activities[date][username] += 1
                 
                 # 处理Agent使用
                 agent_match = agent_pattern.search(line)
                 if agent_match and 'Chat2Agent' in line:
                     timestamp, username, agent_name = agent_match.groups()
                     function_stats['Chat2Agent']['agents'][agent_name] = function_stats['Chat2Agent']['agents'].get(agent_name, 0) + 1
+                    # 统计活跃次数
+                    date = timestamp.split(' ')[0]
+                    if date not in daily_user_activities:
+                        daily_user_activities[date] = {}
+                    if username not in daily_user_activities[date]:
+                        daily_user_activities[date][username] = 0
+                    daily_user_activities[date][username] += 1
         
         # 准备用户访问表数据
         user_access_data = []
@@ -277,23 +338,95 @@ if 'admin' in roles:
             st.markdown("#### 模型使用分布")
             models_df = pd.DataFrame(list(all_models.items()), columns=['模型', '使用次数'])
             models_df = models_df.sort_values(by='使用次数', ascending=False)
-            st.bar_chart(models_df.set_index('模型')['使用次数'])
+            st.bar_chart(models_df.set_index('模型')['使用次数'],sort=False)
             
             # Agent使用统计
             st.markdown("#### Agent使用分布")
             agents_df = pd.DataFrame(list(all_agents.items()), columns=['Agent', '使用次数'])
             agents_df = agents_df.sort_values(by='使用次数', ascending=False)
-            st.bar_chart(agents_df.set_index('Agent')['使用次数'])
+            st.bar_chart(agents_df.set_index('Agent')['使用次数'],sort=False)
             
         
         # 用户访问表
         with tab2:
-            st.markdown("#### 用户访问详细信息")
-            st.dataframe(user_access_df, width="stretch")
+            # 每日新增和活跃用户数统计
+            # 提取所有用户的首次登录日期
+            user_first_login = {}
+            for username, stats in user_stats.items():
+                if 'first_login' in stats:
+                    first_login_date = stats['first_login'].split(' ')[0]  # 提取日期部分
+                    user_first_login[username] = first_login_date
             
-            st.markdown("#### 用户活跃度统计")
+            if user_first_login or daily_user_activities:
+                # 统计每日新增用户数（按首次登录日期）
+                new_users_by_date = {}
+                for username, date in user_first_login.items():
+                    if date not in new_users_by_date:
+                        new_users_by_date[date] = 0
+                    new_users_by_date[date] += 1
+                
+                # 统计每日活跃用户数和总活跃次数
+                active_users_by_date = {}
+                total_activities_by_date = {}
+                for date, user_activities in daily_user_activities.items():
+                    active_users_by_date[date] = len(user_activities)
+                    total_activities_by_date[date] = sum(user_activities.values())
+                
+                # 创建DataFrame
+                dates = sorted(set(new_users_by_date.keys()) | set(active_users_by_date.keys()))
+                data = []
+                data_activity = []
+                for date in dates:
+                    data.append({
+                        'date': date,
+                        'new_users': new_users_by_date.get(date, 0),
+                        'active_users': active_users_by_date.get(date, 0),
+                    })
+                    data_activity.append({
+                        'date': date,
+                        'total_activities': total_activities_by_date.get(date, 0)
+                    })
+                
+                activity_df = pd.DataFrame(data_activity)
+                activity_df = activity_df.sort_values('date')
+                
+                merged_df = pd.DataFrame(data)
+                merged_df = merged_df.sort_values('date')
+
+                # 数据展示
+                # 绘制总活跃次数折线图
+                st.markdown("#### 每日总活跃次数") 
+                st.line_chart(activity_df.set_index('date'), width="stretch")
+                
+                # 绘制新增和活跃用户数折线图
+                st.markdown("#### 每日新增和活跃用户数") 
+                st.line_chart(merged_df.set_index('date'), width="stretch")
+                
+                # 统计每天每个活跃用户的活跃次数
+                st.markdown("#### 每日用户活跃次数详情")
+                user_activity_data = []
+                for date, user_activities in daily_user_activities.items():
+                    for username, count in user_activities.items():
+                        user_activity_data.append({
+                            'date': date,
+                            'username': username,
+                            'activity_count': count
+                        })
+                
+                if user_activity_data:
+                    user_activity_df = pd.DataFrame(user_activity_data)
+                    user_activity_df = user_activity_df.sort_values(['date', 'username'])
+                    st.dataframe(user_activity_df, width="stretch")
+                else:
+                    st.write("暂无用户活跃数据")
+            else:
+                st.write("暂无用户数据")
+            
+            
+            st.markdown("#### 用户总访问详细信息")
+            st.dataframe(user_access_df, width="stretch")
+            st.markdown("#### 用户总活跃度统计")
             # 按消息数排序的用户
             active_users_df = user_access_df.sort_values(by='消息总数', ascending=False)[['用户名', '姓名', '消息总数', '主页访问']]
-            st.bar_chart(active_users_df.set_index('用户名')['消息总数'])
-            #active_users_df = user_access_df[['用户名', '姓名', '消息总数', '主页访问']]
-            #st.dataframe(active_users_df, width="stretch")
+            st.bar_chart(active_users_df.set_index('用户名')['消息总数'],sort=False)
+            
