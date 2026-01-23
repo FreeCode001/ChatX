@@ -108,9 +108,9 @@ if 'admin' in roles:
         chat2model_pattern = re.compile(r'(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2},\d{3}) - ChatX-Chat2Model - INFO - 用户：(\w+) \| 访问Chat2Model:.*?')
         multimodel_pattern = re.compile(r'(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2},\d{3}) - ChatX-MultiModelChat - INFO - 用户：(\w+) \| 访问MultiModelChat:.*?')
         chat2agent_pattern = re.compile(r'(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2},\d{3}) - ChatX-Chat2Agent - INFO - 用户：(\w+) \| 访问Chat2Agent:.*?')
-        message_pattern = re.compile(r'(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2},\d{3}) -.*? - INFO - 用户：(\w+) \|用户.*?输入问题:.*?')
-        model_pattern = re.compile(r'(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2},\d{3}) -.*? - INFO - 用户：(\w+) \|.*?模型 (\w+) 处理用户请求')
-        agent_pattern = re.compile(r'(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2},\d{3}) -.*? - INFO - 用户：(\w+) \|.*?选择了 (.*?)(?:，|$)')
+        message_pattern = re.compile(r'(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2},\d{3}) -.*? - INFO - 用户：(\w+) \|\s*用户.*?输入问题:.*?')
+        model_pattern = re.compile(r'(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2},\d{3}) -.*? - INFO - 用户：(\w+) \|.*?模型 ([\w-]+) 处理用户请求')
+        agent_pattern = re.compile(r'(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2},\d{3}) -.*? - INFO - 用户：(\w+) \|.*?调用 (.*?) 处理用户请求')
         
         # 初始化数据结构
         user_stats = {}
@@ -293,7 +293,7 @@ if 'admin' in roles:
             
             st.markdown("#### 用户活跃度统计")
             # 按消息数排序的用户
-            #active_users_df = user_access_df.sort_values(by='消息总数', ascending=False)[['用户名', '姓名', '消息总数', '主页访问']]
-            #st.bar_chart(active_users_df.set_index('用户名')['消息总数'])
-            active_users_df = user_access_df[['用户名', '姓名', '消息总数', '主页访问']]
-            st.dataframe(active_users_df, width="stretch")
+            active_users_df = user_access_df.sort_values(by='消息总数', ascending=False)[['用户名', '姓名', '消息总数', '主页访问']]
+            st.bar_chart(active_users_df.set_index('用户名')['消息总数'])
+            #active_users_df = user_access_df[['用户名', '姓名', '消息总数', '主页访问']]
+            #st.dataframe(active_users_df, width="stretch")
